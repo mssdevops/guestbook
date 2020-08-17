@@ -1,3 +1,4 @@
+# This is a Declarative Pipeline Script
 pipeline{
 	agent any 
 
@@ -22,7 +23,7 @@ pipeline{
     }
     stage('Build redis Docker image'){
 	    steps{
-	    sh "sudo docker build -t maniengg/redis-follower:latest redis-follower/"
+	    sh "sudo docker build -t maniengg/redis-followerlatest redis-follower/"
       }
     }
     
