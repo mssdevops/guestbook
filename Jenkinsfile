@@ -48,4 +48,7 @@ node{
 	 sh "kubectl apply -f redis-leader-service.yaml"
         }
       }
+	stage("Send notifications to Developers"){
+	  emailext attachLog: true, body: '', recipientProviders: [developers()], subject: 'Check you job status', to: 'manibabu.engg@gmail.com'
+	}
 }
