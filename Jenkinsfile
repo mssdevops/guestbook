@@ -62,13 +62,29 @@ pipeline{
           }
         }
      }
-	 stage ("Email Notification") {
+	/** stage ("Email Notification") {
            steps{
 		mail bcc: '', body: '''Hello Mani Jenkins Job Alert
                 Thanks
                 Mani''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job', to: 'manibabu.engg@gmail.com'	 
 		 }
 		 
+	 }**/
+	 stage("Email Notifation") {
+	   steps{	 
+	       post {
+        failure {
+            script {
+                currentBuild.result = 'FAILURE'
+            }
+        }
+
+        always {
+            step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "manibabu.engg@gmail.com", sendToIndividuals: true])
+        }
+    }
+}
+    
 	 }
    }
  }
