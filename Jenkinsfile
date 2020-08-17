@@ -30,7 +30,7 @@ pipeline{
     stage('Push Docker Image'){
 	steps{
         withCredentials([string(credentialsId: 'DOKCER_HUB_PASSWORD', variable: 'DOKCER_HUB_PASSWORD')]) {
-          sh "sudo docker login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
+          sh "sudo login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
         }
         sh "sudo docker push maniengg/php-redis:latest"
 	sh "sudo docker push maniengg/redis-follower:latest"
