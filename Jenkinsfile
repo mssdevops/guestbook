@@ -71,6 +71,8 @@ pipeline{
 		 }
 		 
 	 }**/
+	
+   }
 	post {
         failure {
             script {
@@ -82,6 +84,4 @@ pipeline{
             step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "manibabu.engg@gmail.com", sendToIndividuals: true])
         }
     }
-   }
- }
 }
