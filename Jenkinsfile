@@ -83,7 +83,7 @@ pipeline{
         }
 
         always {
-           step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "gjilludimudi@miraclesoft.com",sendToIndividuals: true])
+           step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "gjilludimudi@miraclesoft.com,pkannepalli@miraclesoft.com,sarikatla@miraclesoft.com",sendToIndividuals: true])
 	 // mail bcc: '', body: 'Jenkins Job Alerts', cc: 'sarikatla@miraclesoft.com,gjilludimudi@miraclesoft.com,pkannepalli@miraclesoft.com', from: '', replyTo: '', subject: 'Jenkins Job', to: 'manibabu.engg@gmail.com'
         }
     }
