@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-leader
-  namespace: mss
+  namespace: mssdevops
   labels:
     app: redis
     role: leader
