@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: follower
-        image: maniengg/redis-follower:latest
+        image: docker.io/maniengg/redis-follower:latest
         resources:
           requests:
             cpu: 100m
