@@ -1,7 +1,7 @@
 node{
      
     stage('SCM Checkout'){
-        git credentialsId: 'GIT_CREDENTIALSS', url: 'https://github.com/manikarnam/guestbook.git', branch: 'master'
+        git credentialsId: 'GIT_CREDENTIALSS', url: 'https://github.com/mssdevops/guestbook.git', branch: 'master'
     }
 	
     stage('This stage shows the user'){
