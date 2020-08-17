@@ -17,7 +17,7 @@ pipeline{
     
     stage('Build Docker Image'){
 	    steps{
-	    sh "sudo  build -t maniengg/php-redis:latest php-redis/"
+	    sh "sudo docker build -t maniengg/php-redis:latest php-redis/"
        }
     }
     stage('Build redis Docker image'){
