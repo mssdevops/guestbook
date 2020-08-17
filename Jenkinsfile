@@ -30,7 +30,7 @@ pipeline{
     stage('Push Docker Image'){
 	steps{
         withCredentials([string(credentialsId: 'DOKCER_HUB_PASSWORD', variable: 'DOKCER_HUB_PASSWORD')]) {
-          sh "sudo  login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
+          sh "sudo docker login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
         }
         sh "sudo docker push maniengg/php-redis:latest"
 	sh "sudo docker push maniengg/redis-follower:latest"
@@ -83,7 +83,7 @@ pipeline{
         }
 
         always {
-           step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "manibabu.engg@gmail.com","sarikatla@miraclesoft.com","gjilludimudi@miraclesoft.com","pkannepalli@miraclesoft.com" sendToIndividuals: true])
+           step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "manibabu.engg@gmail.com,sarikatla@miraclesoft.com,gjilludimudi@miraclesoft.com,pkannepalli@miraclesoft.com" sendToIndividuals: true])
 	 // mail bcc: '', body: 'Jenkins Job Alerts', cc: 'sarikatla@miraclesoft.com,gjilludimudi@miraclesoft.com,pkannepalli@miraclesoft.com', from: '', replyTo: '', subject: 'Jenkins Job', to: 'manibabu.engg@gmail.com'
         }
     }
