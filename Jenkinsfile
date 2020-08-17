@@ -5,7 +5,7 @@ node{
     }
 	
     stage('This stage shows the user'){
-	  sh "whoami"
+	  sh "ls -lart"
 		
 	}
     
