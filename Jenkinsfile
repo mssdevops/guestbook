@@ -1,28 +1,40 @@
-node{
-     
-    stage('SCM Checkout'){
-        git credentialsId: 'GIT_CREDENTIALSS', url: 'https://github.com/mssdevops/guestbook.git', branch: 'master'
-    }
-	
-    stage('This stage shows the user'){
-	  sh "ls -lart"
+pipeline{
+	agent any 
+
+ stages{
 		
+    stage('SCM Checkout'){
+	    steps{
+                  git credentialsId: 'GIT_CREDENTIALSS', url: 'https://github.com/mssdevops/guestbook.git', branch: 'master'
+    }
+	    }
+    
+    stage('This stage shows the user'){
+      steps{
+	  sh "ls -lart"
+      }	
 	}
     
     stage('Build Docker Image'){
+	    steps{
 	    sh "sudo docker build -t maniengg/php-redis:latest php-redis/"
+       }
     }
     stage('Build redis Docker image'){
+	    steps{
 	    sh "sudo docker build -t maniengg/redis-follower:latest redis-follower/"
+      }
     }
     
     stage('Push Docker Image'){
+	steps{
         withCredentials([string(credentialsId: 'DOKCER_HUB_PASSWORD', variable: 'DOKCER_HUB_PASSWORD')]) {
           sh "sudo docker login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
         }
         sh "sudo docker push maniengg/php-redis:latest"
 	sh "sudo docker push maniengg/redis-follower:latest"
-     }
+       }
+    }
      
     /** stage("Deploy To Kuberates Cluster"){
        kubernetesDeploy(
@@ -33,6 +45,7 @@ node{
      }**/
 	 
      stage("Deploy To Kuberates Cluster"){
+      steps{
         withCredentials([file(credentialsId: 'demo-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
          sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
          sh "gcloud config set project mssdevops-284216"
@@ -48,7 +61,10 @@ node{
 	 sh "kubectl apply -f redis-leader-service.yaml"
         }
       }
-	stage("Send notifications to Developers"){
-	  emailext attachLog: true, body: '', recipientProviders: [developers()], subject: 'Check you job status', to: 'manibabu.engg@gmail.com'
-	}
+	 post {
+        always {
+            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+        }
+    }
 }
+ }
