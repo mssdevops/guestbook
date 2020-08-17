@@ -59,13 +59,17 @@ pipeline{
          sh "kubectl apply -f redis-follower-service.yaml"
 	 sh "kubectl apply -f redis-leader-deployment.yaml"
 	 sh "kubectl apply -f redis-leader-service.yaml"
-         }
-       }
-     post {
-        always {
-            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+          }
         }
-    }
+     }
+	 stage ("Email Notification") {
+           steps{
+		mail bcc: '', body: '''Hello Mani Jenkins Job Alert
+                Thanks
+                Mani''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job', to: 'manibabu.engg@gmail.com'	 
+		 }
+		 
+	 }
    }
  }
-}
+
