@@ -1,50 +1,23 @@
-//This is a Declarative Pipeline Script
+currentBuild.displayName="MiracleGuestBook-#"+currentBuild.number
 pipeline{
-	agent any 
-
- stages{
-		
-    stage('SCM Checkout'){
-	    steps{
-                  git credentialsId: 'GIT_CREDENTIALSS', url: 'https://github.com/mssdevops/guestbook.git', branch: 'master'
-    }
-	    }
-    
-    stage('This stage shows the user'){
-      steps{
-	  sh "ls -lart"
-      }	
-	}
-    
-    stage('Build Docker Image'){
-	    steps{
-	    sh "sudo docker build -t maniengg/php-redis:latest php-redis/"
+    agent any 
+     stages{
+        stage('Build Docker Image'){
+	  steps{
+	     sh "sudo docker build -t maniengg/php-redis:latest php-redis/"
+             sh "sudo docker build -t maniengg/redis-follower:latest redis-follower/"
+           }
        }
-    }
-    stage('Build redis Docker image'){
-	    steps{
-	    sh "sudo docker build -t maniengg/redis-follower:latest redis-follower/"
-      }
-    }
     
-    stage('Push Docker Image'){
+     stage('Push Docker Image'){
 	steps{
         withCredentials([string(credentialsId: 'DOKCER_HUB_PASSWORD', variable: 'DOKCER_HUB_PASSWORD')]) {
           sh "sudo docker login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
+          sh "sudo docker push maniengg/php-redis:latest"
+	  sh "sudo docker push maniengg/redis-follower:latest"
+            }
         }
-        sh "sudo docker push maniengg/php-redis:latest"
-	sh "sudo docker push maniengg/redis-follower:latest"
-       }
-    }
-     
-    /** stage("Deploy To Kuberates Cluster"){
-       kubernetesDeploy(
-         configs: 'springBootMongo.yml', 
-         kubeconfigId: 'mykubeconfig',
-         enableConfigSubstitution: true
-        )
-     }**/
-	 
+     }     
      stage("Deploy To Kuberates Cluster"){
       steps{
         withCredentials([file(credentialsId: 'demo-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
@@ -60,19 +33,9 @@ pipeline{
          sh "kubectl apply -f redis-follower-service.yaml"
 	 sh "kubectl apply -f redis-leader-deployment.yaml"
 	 sh "kubectl apply -f redis-leader-service.yaml"
-          }
-        }
-     
-	/** stage ("Email Notification") {
-           steps{
-		mail bcc: '', body: '''Hello Mani Jenkins Job Alert
-                Thanks
-                Mani''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job', to: 'manibabu.engg@gmail.com'	 
-		 }
-		 
-	 }**/
-	
-   }
+             }
+         }
+      }
  }
 
 	post {
@@ -84,7 +47,7 @@ pipeline{
 
         always {
            step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "gjilludimudi@miraclesoft.com,pkannepalli@miraclesoft.com,sarikatla@miraclesoft.com,sakapelly@miraclesoft.com,mkarnam@miraclesoft.com",sendToIndividuals: true])
-	 // mail bcc: '', body: 'Jenkins Job Alerts', cc: 'sarikatla@miraclesoft.com,gjilludimudi@miraclesoft.com,pkannepalli@miraclesoft.com', from: '', replyTo: '', subject: 'Jenkins Job', to: 'manibabu.engg@gmail.com'
+	
         }
     }
 }
