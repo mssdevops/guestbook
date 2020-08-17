@@ -61,7 +61,7 @@ pipeline{
 	 sh "kubectl apply -f redis-leader-service.yaml"
           }
         }
-     }
+     
 	/** stage ("Email Notification") {
            steps{
 		mail bcc: '', body: '''Hello Mani Jenkins Job Alert
@@ -70,9 +70,7 @@ pipeline{
 		 }
 		 
 	 }**/
-	 stage("Email Notifation") {
-	   steps{	 
-	       post {
+	post {
         failure {
             script {
                 currentBuild.result = 'FAILURE'
@@ -83,9 +81,6 @@ pipeline{
             step([$class: 'Mailer',notifyEveryUnstableBuild: true,recipients: "manibabu.engg@gmail.com", sendToIndividuals: true])
         }
     }
-}
-    
-	 }
    }
  }
-
+}
