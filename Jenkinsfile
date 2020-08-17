@@ -1,4 +1,4 @@
-# This is a Declarative Pipeline Script
+//This is a Declarative Pipeline Script
 pipeline{
 	agent any 
 
