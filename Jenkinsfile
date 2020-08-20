@@ -8,8 +8,8 @@ pipeline{
 //Build the Docker Image based on the Dockerfile
         stage('Build Docker Image'){
 	  steps{
-	     sh "sudo docker build -t maniengg/php-redis:latest php-redis/"
-             sh "sudo docker build -t maniengg/redis-follower:latest redis-follower/"
+	     sh "sudo docker build -t maniengg/php-redis:${BUILD_ID} php-redis/"
+             sh "sudo docker build -t maniengg/redis-follower:${BUILD_ID} redis-follower/"
            }
        }
  // Pushing the Docker Image to DockerHub   
@@ -18,8 +18,8 @@ pipeline{
 //Docker Hub Credentials
         withCredentials([string(credentialsId: 'DOKCER_HUB_PASSWORD', variable: 'DOKCER_HUB_PASSWORD')]) {
           sh "sudo docker login -u maniengg -p ${DOKCER_HUB_PASSWORD}"
-          sh "sudo docker push maniengg/php-redis:latest"
-	  sh "sudo docker push maniengg/redis-follower:latest"
+          sh "sudo docker push maniengg/php-redis:${BUILD_ID}"
+	  sh "sudo docker push maniengg/redis-follower:${BUILD_ID}"
             }
         }
      }     
@@ -35,10 +35,11 @@ pipeline{
          sh "gcloud config set compute/zone us-central1-c"
          sh "gcloud config set compute/region us-central1"
          sh "gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project mssdevops-284216"
-         //sh "sed -i -e 's,image_to_be_deployed,'maniengg/spring-boot-mongo:${BUILD_ID}',g' springBootMongo.yml"
+         sh "sed -i -e 's,image_to_be_deployed,'maniengg/php-redis:${BUILD_ID}',g' frontend-deployment.yaml"
 //Kubernetes Deployments and Services
          sh "kubectl apply -f frontend-deployment.yaml"     
          sh "kubectl apply -f frontend-service.yaml"
+	 sh "sed -i -e 's,image_to_be_deployed,'maniengg/redis-follower:${BUILD_ID}',g' redis-follower-deployment.yaml"
 	 sh "kubectl apply -f redis-follower-deployment.yaml"
          sh "kubectl apply -f redis-follower-service.yaml"
 	 sh "kubectl apply -f redis-leader-deployment.yaml"
