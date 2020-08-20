@@ -8,7 +8,7 @@ pipeline{
 //Build the Docker Image based on the Dockerfile
         stage('Build Docker Image'){
 	  steps{
-	     sh "sudo docker build -t maniengg/php-redis:${BUILD_ID} php-redis/"
+	     sh "sudo docker build -t maniengg/php-redis:${BUILD_ID} php-redis/"   //when we run docker in this step, we're running it via a shell on the docker build-pod container
              sh "sudo docker build -t maniengg/redis-follower:${BUILD_ID} redis-follower/"
            }
        }
@@ -37,7 +37,7 @@ pipeline{
          sh "gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project mssdevops-284216"
          sh "sed -i -e 's,image_to_be_deployed,'maniengg/php-redis:${BUILD_ID}',g' frontend-deployment.yaml"
 //Kubernetes Deployments and Services
-         sh "kubectl apply -f frontend-deployment.yaml"     
+         sh "kubectl apply -f frontend-deployment.yaml"    // This yamal file represent the frontend-deployment 
          sh "kubectl apply -f frontend-service.yaml"
 	 sh "sed -i -e 's,image_to_be_deployed,'maniengg/redis-follower:${BUILD_ID}',g' redis-follower-deployment.yaml"
 	 sh "kubectl apply -f redis-follower-deployment.yaml"
