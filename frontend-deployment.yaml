@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: php-redis
-        image: docker.io/maniengg/php-redis:latest
+        image: docker.io/image_to_be_deployed
         imagePullPolicy: Always
         env:
         - name: GET_HOSTS_FROM
