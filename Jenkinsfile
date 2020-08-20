@@ -31,19 +31,20 @@ pipeline{
 //activate the service account
          sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
 //Configuring the project details to Jenkins and communicate with the gke cluster
-         sh "gcloud config set project mssdevops-284216"
-         sh "gcloud config set compute/zone us-central1-c"
-         sh "gcloud config set compute/region us-central1"
-         sh "gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project mssdevops-284216"
-         sh "sed -i -e 's,image_to_be_deployed,'maniengg/php-redis:${BUILD_ID}',g' frontend-deployment.yaml"
+         sh "gcloud config set project mssdevops-284216" //configuring name of the project
+         sh "gcloud config set compute/zone us-central1-c"// confiuring the project compute-zone
+         sh "gcloud config set compute/region us-central1"// confiuring the project compute-region
+         sh "gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project mssdevops-284216"// command to connect the GKE cluster through command line
+
+         sh "sed -i -e 's,image_to_be_deployed,'maniengg/php-redis:${BUILD_ID}',g' frontend-deployment.yaml" // To replace the latest image and reflected in deployment yaml files.
 //Kubernetes Deployments and Services
-         sh "kubectl apply -f frontend-deployment.yaml"    // This yamal file represent the frontend-deployment 
-         sh "kubectl apply -f frontend-service.yaml"
-	 sh "sed -i -e 's,image_to_be_deployed,'maniengg/redis-follower:${BUILD_ID}',g' redis-follower-deployment.yaml"
-	 sh "kubectl apply -f redis-follower-deployment.yaml"
-         sh "kubectl apply -f redis-follower-service.yaml"
-	 sh "kubectl apply -f redis-leader-deployment.yaml"
-	 sh "kubectl apply -f redis-leader-service.yaml"
+         sh "kubectl apply -f frontend-deployment.yaml"    // This line is to deloy frontend in GKE cluster where it manage a set of identical pods. 
+         sh "kubectl apply -f frontend-service.yaml"       //This line is to allocate network access to set of pods.
+	 sh "sed -i -e 's,image_to_be_deployed,'maniengg/redis-follower:${BUILD_ID}',g' redis-follower-deployment.yaml" // To replace the latest image and reflected in deployment yaml files.
+	 sh "kubectl apply -f redis-follower-deployment.yaml" // This line is to deploy the redis-follower to GKE cluster, where reads data from multiple Redis-follower instances
+         sh "kubectl apply -f redis-follower-service.yaml"   // This line is to allocates the netwok access to pods deployed by redis-follower.
+	 sh "kubectl apply -f redis-leader-deployment.yaml" // This line is to deploy the redis-leader to GKE cluster,  where the application writes its data to a Redis-leader instance.
+	 sh "kubectl apply -f redis-leader-service.yaml"   //  This line is to allocates the netwok access to pods deployed by redis-leader also describes the service resources for redis-leader.
              }
          }
       }
