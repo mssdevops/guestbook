@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: follower
-        image: docker.io/maniengg/redis-follower:latest
+        image: image_to_be_deployed
         imagePullPolicy: Always
         resources:
           requests:
