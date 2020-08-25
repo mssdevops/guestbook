@@ -1,5 +1,5 @@
 //This line indicates the Application display name
-currentBuild.displayName="MiracleGuestBook-#"+currentBuild.number
+currentBuild.displayName="MiracleBook-#"+currentBuild.number
 
 
 //This is the Declarative Pipeline Script
