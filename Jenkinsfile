@@ -1,6 +1,7 @@
 //This line indicates the Application display name
 currentBuild.displayName="MiracleGuestBook-#"+currentBuild.number
 
+
 //This is the Declarative Pipeline Script
 pipeline{
     agent any 
